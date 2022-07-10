@@ -1,0 +1,26 @@
+{
+  "name": "sainsburys-receipt-parser",
+  "version": "1.0.0",
+  "description": "Parser for PDF receipts sent by Sainsbury's via email",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/innocentoreo/sainsburys-receipt-parser.git"
+  },
+  "keywords": [
+    "sainsburys",
+    "parser"
+  ],
+  "author": "W Whitley",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/innocentoreo/sainsburys-receipt-parser/issues"
+  },
+  "homepage": "https://github.com/innocentoreo/sainsburys-receipt-parser#readme",
+  "dependencies": {
+    "typescript": "^4.7.4"
+  }
+}
