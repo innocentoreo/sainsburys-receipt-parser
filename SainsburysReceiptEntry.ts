@@ -3,9 +3,13 @@ import { EntryField, ParseTextItemsResult, TextItem } from "./types";
 function charWidth(char: string) {
   switch (char) {
     case "C":
+    case "ﬀ":
+    case "m":
       return 1;
-      break;
-
+    case "w":
+      return 0.7;
+    case "l":
+      return 0.3;
     default:
       break;
   }
@@ -44,7 +48,6 @@ function parseTextItems(items: TextItem[]): ParseTextItemsResult {
           if (items[index - 1].text !== items[index - 1].text.toUpperCase()) {
             if (item.x - lastItemPosition > charWidth(items[index - 1].text)) {
               fieldText += " ";
-              console.log(fieldText);
             }
           }
           break;
@@ -61,30 +64,41 @@ function parseTextItems(items: TextItem[]): ParseTextItemsResult {
     }
 
     lastItemPosition = item.x;
-    fieldText += item.text;
+    fieldText += item.text.trim();
     fieldText = fieldText.trim();
   }
   return result;
 }
 
 class SainsburysReceiptEntry {
-  _quantity: string | undefined;
+  _textItems: TextItem[] = [];
+
+  _quantity: number | undefined;
 
   _mass_in_kg: number | undefined;
 
   _description: string | undefined;
 
-  _price: string | undefined;
+  _price: number | undefined;
 
   constructor(params?: { textItems?: TextItem[] }) {
-    this._quantity = "";
+    this._quantity = -1;
 
     if (params) {
       if (params.textItems) {
+        this._textItems = params.textItems;
         const parsedResult = parseTextItems(params.textItems);
-        this._quantity = parsedResult.quantityString;
+        if (parsedResult.quantityString?.includes("kg")) {
+          this._quantity = parseFloat(
+            parsedResult.quantityString.replace("kg", "") || ""
+          );
+        } else {
+          this._quantity = parseInt(parsedResult.quantityString || "", 10);
+        }
         this._description = parsedResult.descriptionString;
-        this._price = parsedResult.priceString;
+        this._price =
+          parseFloat((parsedResult.priceString || "").replace("£", "")) /
+          this._quantity;
       }
     }
   }
