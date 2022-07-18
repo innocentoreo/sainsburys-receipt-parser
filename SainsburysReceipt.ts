@@ -12,23 +12,46 @@ class SainsburysReceipt {
 
   loadFromFile(filePath: string) {
     const reader = new PdfReader();
+    let entriesStarted = false;
+    let entriesEnded = false;
     return new Promise<void>((resolve, reject) => {
       try {
         const pages: any[] = [];
         let currentPage: SainsburysReceiptPage | undefined;
         reader.parseFileItems(filePath, (err: any, item: any) => {
           if (item) {
+            // not end of file
             if (item.page) {
+              // new page
               if (currentPage) {
+                // not first page
                 pages.push(currentPage);
+                // check if entries started or ended here
+                if (!entriesStarted) {
+                  entriesStarted = currentPage.entriesStart;
+                }
+                if (!entriesEnded) {
+                  entriesEnded = currentPage.entriesEnd;
+                }
               }
-              currentPage = new SainsburysReceiptPage();
+              // start new page with info on last page (have entries started, have they finished)
+              currentPage = new SainsburysReceiptPage({
+                entriesStarted,
+                entriesEnded,
+              });
             } else if (item.text) {
               currentPage?._texts.push(item as TextItem);
             }
           } else {
+            // end of file
             if (currentPage) {
               pages.push(currentPage);
+              if (!entriesStarted) {
+                entriesStarted = currentPage.entriesStart;
+              }
+              if (!entriesEnded) {
+                entriesEnded = currentPage.entriesEnd;
+              }
             }
             this._pages = pages;
             resolve();
@@ -45,6 +68,10 @@ class SainsburysReceipt {
       (entries, page) => entries.concat(page.entries),
       []
     );
+  }
+
+  get rowsAsConcatenatedStrings() {
+    return this._pages.map((pg) => pg.rowsAsStringArray);
   }
 }
 

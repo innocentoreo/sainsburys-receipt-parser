@@ -89,7 +89,7 @@ class SainsburysReceiptEntry {
         this._textItems = params.textItems;
         const parsedResult = parseTextItems(params.textItems);
         if (parsedResult.quantityString?.includes("kg")) {
-          this._quantity = parseFloat(
+          this._mass_in_kg = parseFloat(
             parsedResult.quantityString.replace("kg", "") || ""
           );
         } else {

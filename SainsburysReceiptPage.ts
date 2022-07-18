@@ -1,4 +1,5 @@
 import SainsburysReceiptEntry from "./SainsburysReceiptEntry";
+import SainsburysReceiptRow from "./SainsburysReceiptRow";
 import { PdfFileItem, TextItem } from "./types";
 
 function sortByX<T extends PdfFileItem>(items: T[]) {
@@ -8,8 +9,20 @@ function sortByX<T extends PdfFileItem>(items: T[]) {
 class SainsburysReceiptPage {
   _texts: TextItem[];
 
-  constructor() {
+  _entriesStarted: boolean = false;
+
+  _entriesEnded: boolean = false;
+
+  constructor(params?: { entriesStarted?: boolean; entriesEnded?: boolean }) {
     this._texts = [];
+    if (params) {
+      if (params.entriesStarted) {
+        this._entriesStarted = params.entriesStarted;
+      }
+      if (params.entriesEnded) {
+        this._entriesEnded = params.entriesEnded;
+      }
+    }
   }
 
   get yVals() {
@@ -30,7 +43,7 @@ class SainsburysReceiptPage {
     });
   }
 
-  get rowsAsString() {
+  get rowsAsStringArray() {
     const rows = this.rows;
     return rows.map((row) =>
       row.reduce((text, el) => {
@@ -42,7 +55,46 @@ class SainsburysReceiptPage {
 
   get entries() {
     const rows = this.rows;
-    return rows.map((row) => new SainsburysReceiptEntry({ textItems: row }));
+    const result: SainsburysReceiptEntry[] = [];
+    let firstRowReached = this._entriesStarted;
+    let lastRowReached = this._entriesEnded;
+    for (let index = 0; index < rows.length; index += 1) {
+      const row = new SainsburysReceiptRow({ textItems: rows[index] });
+      if (row.concatenatedText.trim() === "Ordersummary") {
+        lastRowReached = true;
+      }
+      if (firstRowReached && !lastRowReached) {
+        result.push(new SainsburysReceiptEntry({ textItems: rows[index] }));
+      }
+      if (row.concatenatedText.trim().includes("Deliverysummary")) {
+        firstRowReached = true;
+      }
+    }
+    return result;
+  }
+
+  get entriesStart() {
+    const rows = this.rows;
+    let firstRowReached = false;
+    for (let index = 0; index < rows.length; index += 1) {
+      const row = new SainsburysReceiptRow({ textItems: rows[index] });
+      if (row.concatenatedText.trim().includes("Deliverysummary")) {
+        firstRowReached = true;
+      }
+    }
+    return firstRowReached;
+  }
+
+  get entriesEnd() {
+    const rows = this.rows;
+    let lastRowReached = false;
+    for (let index = 0; index < rows.length; index += 1) {
+      const row = new SainsburysReceiptRow({ textItems: rows[index] });
+      if (row.concatenatedText.trim() === "Ordersummary") {
+        lastRowReached = true;
+      }
+    }
+    return lastRowReached;
   }
 }
 
