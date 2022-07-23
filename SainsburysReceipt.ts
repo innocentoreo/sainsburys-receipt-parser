@@ -78,6 +78,14 @@ class SainsburysReceipt {
     return this._pages.find((page) => page.slotTime)?.slotTime;
   }
 
+  get totalPaid() {
+    return this._pages.find((page) => page.totalPaid)?.totalPaid;
+  }
+
+  get itemCount() {
+    return this._pages.find((page) => page.itemCount)?.itemCount;
+  }
+
   get rowsAsConcatenatedStrings() {
     return this._pages.map((pg) => pg.rowsAsStringArray);
   }

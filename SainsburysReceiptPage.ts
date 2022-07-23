@@ -93,6 +93,34 @@ class SainsburysReceiptPage {
     return undefined;
   }
 
+  get totalPaid() {
+    const strings = this.rowsAsStringArray;
+    let regExp = /Totalpaid£([0-9.]+)/g;
+    const goodString = strings.find((string) => string.match(regExp));
+    if (goodString) {
+      let match = regExp.exec(goodString);
+      if (match === null) {
+        return undefined;
+      }
+      return parseFloat(match[1]);
+    }
+    return undefined;
+  }
+
+  get itemCount() {
+    const strings = this.rowsAsStringArray;
+    let regExp = /Deliverysummary\(([0-9]+)items\)/g;
+    const goodString = strings.find((string) => string.match(regExp));
+    if (goodString) {
+      let match = regExp.exec(goodString);
+      if (match === null) {
+        return undefined;
+      }
+      return parseInt(match[1], 10);
+    }
+    return undefined;
+  }
+
   get slotTime() {
     const strings = this.rowsAsStringArray;
     let regExp =
