@@ -6,6 +6,32 @@ function sortByX<T extends PdfFileItem>(items: T[]) {
   return items.sort((a, b) => a.x - b.x);
 }
 
+function monthAsNumber(monthAsString: string) {
+  let monthNums = [];
+  for (let index = 0; index < 12; index += 1) {
+    monthNums.push(index);
+  }
+  const months = monthNums.map((monthNum) => {
+    const date = new Date(0);
+    date.setMonth(monthNum);
+    return date.toLocaleString("default", { month: "long" });
+  });
+  return months.indexOf(monthAsString);
+}
+
+function parseSainsburysTime(timeAsString: string) {
+  const regExp = /([0-9]+):([0-9]+)([apm]+)/g;
+  const match = regExp.exec(timeAsString);
+  if (match !== null) {
+    const isPM = match[3] === "pm";
+    return {
+      hours: parseInt(match[1], 10) + (isPM ? 12 : 0),
+      minutes: parseInt(match[2], 10),
+    };
+  }
+  return undefined;
+}
+
 class SainsburysReceiptPage {
   _texts: TextItem[];
 
@@ -51,6 +77,46 @@ class SainsburysReceiptPage {
         return text;
       }, "")
     );
+  }
+
+  get orderNumber() {
+    const strings = this.rowsAsStringArray;
+    let regExp = /Yourreceiptfororder:([0-9]+)/g;
+    const goodString = strings.find((string) => string.match(regExp));
+    if (goodString) {
+      let match = regExp.exec(goodString);
+      if (match === null) {
+        return undefined;
+      }
+      return parseInt(match[1], 10);
+    }
+    return undefined;
+  }
+
+  get slotTime() {
+    const strings = this.rowsAsStringArray;
+    let regExp =
+      /Slottime:([A-z]+)([0-9]+[^A-Z]+)([A-z]+)([^,]+),([0-9\:apm]+)-([0-9\:apm]+)/g;
+    const goodString = strings.find((string) => string.match(regExp));
+    if (goodString) {
+      let match = regExp.exec(goodString);
+      if (match === null) {
+        return undefined;
+      }
+      const resultDate = new Date(0);
+      resultDate.setFullYear(
+        parseInt(match[4], 10),
+        monthAsNumber(match[3]),
+        parseInt(match[2], 10)
+      );
+      const slotHoursAndMinutes = parseSainsburysTime(match[5]);
+      if (slotHoursAndMinutes) {
+        resultDate.setHours(slotHoursAndMinutes.hours);
+        resultDate.setMinutes(slotHoursAndMinutes.minutes);
+      }
+      return resultDate;
+    }
+    return undefined;
   }
 
   get entries() {

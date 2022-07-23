@@ -7,9 +7,12 @@ const dir = fs.readdirSync(folder);
 
 const rct = new SainsburysReceipt();
 
-rct.loadFromFile(folder + dir[0]).then(() => {
-  for (let index = 0; index < rct.entries.length; index += 1) {
-    const element = rct.rowsAsConcatenatedStrings;
-    console.log(element);
+async function main() {
+  for (let index = 0; index < dir.length; index += 1) {
+    await rct.loadFromFile(folder + dir[index]).then(() => {
+      console.log(rct.orderNumber, rct.slotTime?.toLocaleString());
+    });
   }
-});
+}
+
+main();

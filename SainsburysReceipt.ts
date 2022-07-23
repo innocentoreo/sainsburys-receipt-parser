@@ -70,6 +70,14 @@ class SainsburysReceipt {
     );
   }
 
+  get orderNumber() {
+    return this._pages.find((page) => page.orderNumber)?.orderNumber;
+  }
+
+  get slotTime() {
+    return this._pages.find((page) => page.slotTime)?.slotTime;
+  }
+
   get rowsAsConcatenatedStrings() {
     return this._pages.map((pg) => pg.rowsAsStringArray);
   }
