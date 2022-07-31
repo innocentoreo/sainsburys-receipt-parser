@@ -89,6 +89,17 @@ class SainsburysReceipt {
   get rowsAsConcatenatedStrings() {
     return this._pages.map((pg) => pg.rowsAsStringArray);
   }
+
+  get serialisable() {
+    return {
+      entries: this.entries.map((entry) => entry.serialisable),
+      orderNumber: this.orderNumber,
+      slotTime: this.slotTime,
+      totalPaid: this.totalPaid,
+      itemCount: this.itemCount,
+      rowsAsConcatenatedStrings: this.rowsAsConcatenatedStrings,
+    };
+  }
 }
 
 export default SainsburysReceipt;

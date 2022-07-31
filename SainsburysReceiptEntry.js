@@ -69,24 +69,36 @@ var SainsburysReceiptEntry = /** @class */ (function () {
     function SainsburysReceiptEntry(params) {
         var _a;
         this._textItems = [];
-        this._quantity = -1;
+        this.quantity = -1;
         if (params) {
             if (params.textItems) {
                 this._textItems = params.textItems;
                 var parsedResult = parseTextItems(params.textItems);
                 if ((_a = parsedResult.quantityString) === null || _a === void 0 ? void 0 : _a.includes("kg")) {
-                    this._mass_in_kg = parseFloat(parsedResult.quantityString.replace("kg", "") || "");
+                    this.mass_in_kg = parseFloat(parsedResult.quantityString.replace("kg", "") || "");
                 }
                 else {
-                    this._quantity = parseInt(parsedResult.quantityString || "", 10);
+                    this.quantity = parseInt(parsedResult.quantityString || "", 10);
                 }
-                this._description = parsedResult.descriptionString;
-                this._price =
+                this.description = parsedResult.descriptionString;
+                this.price =
                     parseFloat((parsedResult.priceString || "").replace("£", "")) /
-                        this._quantity;
+                        this.quantity;
             }
         }
     }
+    Object.defineProperty(SainsburysReceiptEntry.prototype, "serialisable", {
+        get: function () {
+            return {
+                quantity: this.quantity,
+                mass_in_kg: this.mass_in_kg,
+                description: this.description,
+                price: this.price,
+            };
+        },
+        enumerable: false,
+        configurable: true
+    });
     return SainsburysReceiptEntry;
 }());
 exports.default = SainsburysReceiptEntry;

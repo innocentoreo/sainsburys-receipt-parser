@@ -102,6 +102,15 @@ class SainsburysReceiptEntry {
       }
     }
   }
+
+  get serialisable() {
+    return {
+      quantity: this.quantity,
+      mass_in_kg: this.mass_in_kg,
+      description: this.description,
+      price: this.price,
+    };
+  }
 }
 
 export default SainsburysReceiptEntry;

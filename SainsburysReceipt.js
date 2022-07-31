@@ -108,6 +108,20 @@ var SainsburysReceipt = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
+    Object.defineProperty(SainsburysReceipt.prototype, "serialisable", {
+        get: function () {
+            return {
+                entries: this.entries.map(function (entry) { return entry.serialisable; }),
+                orderNumber: this.orderNumber,
+                slotTime: this.slotTime,
+                totalPaid: this.totalPaid,
+                itemCount: this.itemCount,
+                rowsAsConcatenatedStrings: this.rowsAsConcatenatedStrings,
+            };
+        },
+        enumerable: false,
+        configurable: true
+    });
     return SainsburysReceipt;
 }());
 exports.default = SainsburysReceipt;
