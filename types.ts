@@ -19,3 +19,17 @@ export interface ParseTextItemsResult {
   descriptionString: undefined | string;
   priceString: undefined | string;
 }
+
+export interface SerialisableReceipt {
+  entries: {
+    quantity: number | undefined;
+    mass_in_kg: number | undefined;
+    description: string | undefined;
+    price: number | undefined;
+  }[];
+  orderNumber: number | undefined;
+  slotTime: Date | undefined;
+  totalPaid: number | undefined;
+  itemCount: number | undefined;
+  rowsAsConcatenatedStrings: string[][];
+}

@@ -1,7 +1,7 @@
 import SainsburysReceiptEntry from "./SainsburysReceiptEntry";
 import { PdfReader } from "pdfreader";
 import SainsburysReceiptPage from "./SainsburysReceiptPage";
-import { TextItem } from "./types";
+import { SerialisableReceipt, TextItem } from "./types";
 
 class SainsburysReceipt {
   _pages: SainsburysReceiptPage[];
@@ -90,7 +90,7 @@ class SainsburysReceipt {
     return this._pages.map((pg) => pg.rowsAsStringArray);
   }
 
-  get serialisable() {
+  get serialisable(): SerialisableReceipt {
     return {
       entries: this.entries.map((entry) => entry.serialisable),
       orderNumber: this.orderNumber,
