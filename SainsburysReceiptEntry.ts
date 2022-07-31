@@ -73,32 +73,32 @@ function parseTextItems(items: TextItem[]): ParseTextItemsResult {
 class SainsburysReceiptEntry {
   _textItems: TextItem[] = [];
 
-  _quantity: number | undefined;
+  quantity: number | undefined;
 
-  _mass_in_kg: number | undefined;
+  mass_in_kg: number | undefined;
 
-  _description: string | undefined;
+  description: string | undefined;
 
-  _price: number | undefined;
+  price: number | undefined;
 
   constructor(params?: { textItems?: TextItem[] }) {
-    this._quantity = -1;
+    this.quantity = -1;
 
     if (params) {
       if (params.textItems) {
         this._textItems = params.textItems;
         const parsedResult = parseTextItems(params.textItems);
         if (parsedResult.quantityString?.includes("kg")) {
-          this._mass_in_kg = parseFloat(
+          this.mass_in_kg = parseFloat(
             parsedResult.quantityString.replace("kg", "") || ""
           );
         } else {
-          this._quantity = parseInt(parsedResult.quantityString || "", 10);
+          this.quantity = parseInt(parsedResult.quantityString || "", 10);
         }
-        this._description = parsedResult.descriptionString;
-        this._price =
+        this.description = parsedResult.descriptionString;
+        this.price =
           parseFloat((parsedResult.priceString || "").replace("£", "")) /
-          this._quantity;
+          this.quantity;
       }
     }
   }
