@@ -9,6 +9,7 @@ function charWidth(char: string) {
   switch (char) {
     case "C":
     case "ﬀ":
+    case "ﬃ":
     case "m":
       return 1;
     case "w":
