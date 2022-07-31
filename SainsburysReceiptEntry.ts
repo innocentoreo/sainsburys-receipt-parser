@@ -1,4 +1,9 @@
-import { EntryField, ParseTextItemsResult, TextItem } from "./types";
+import {
+  EntryField,
+  ParseTextItemsResult,
+  SerialisableReceiptEntry,
+  TextItem,
+} from "./types";
 
 function charWidth(char: string) {
   switch (char) {
@@ -103,7 +108,7 @@ class SainsburysReceiptEntry {
     }
   }
 
-  get serialisable() {
+  get serialisable(): SerialisableReceiptEntry {
     return {
       quantity: this.quantity,
       mass_in_kg: this.mass_in_kg,
